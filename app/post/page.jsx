@@ -1,7 +1,9 @@
+import { ListOfPost } from "./listOfPost";
+
 export default function Post(){
     return(
-        <h1>
-            Aca mostramos los post
-        </h1>
+        <section>
+            <ListOfPost />
+        </section>
     )
 }

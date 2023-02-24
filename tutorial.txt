@@ -79,16 +79,44 @@
 
 //Fetching de datos
 
-1)Por defecto, en next.js todos los componentes son componentes del servidro. Que quiere decir esto
-  que los hooks no se pueden utilizar. Para poder utilizarlos debemos declarar que son componentes del cliente
-  mediante useClient. Lo mismo pasan con los enventos como handleClick
+1)A la hora de utilizar fetch, lo que ocurre con next.js es que no se va a re renderizar el componente, es decir que no se actualizara
+  ante un cambio echo por una peticion fetch. Esto ocurre porque los componente de Next.js son estaticos.
+  Para que funcione el fetching de datos debemos seguir los siguiente pasos.
 
-2)Lo ideal es que el componente en el que utilicemos useCliente. sea lo mas pequeño posible. Es decir que solo las partes
-  pequeñas que necesitan interactividad, como un button o select sean las que utilicen useclient.
+    a) Creamos un nuevo componente donde vamos a utilizar el fetching de datos.
+    b) El nuevo componente tiene que ser asyncrono
+    c) Mapeamos los datos obtenidos del fetching de datos
+
+2)Al generar la build se generan los staticos que van a mostrarse en el navegador. Una vez generados, los componentes
+  que utilicen una peticion fetch() mostraran la informacion de ese momento en el que se hizo la build, es decir que si alguien
+  hace un nuevo post o ingresa nueva informacion a la api, esta no se mostrara en el navegador.
+  para evitar esto podemos hacer lo siguiente
+
+    a) const fetchPost = () => fetch('https://jsonplaceholder.typicode.com/posts', {cache: 'no-store'})
+                                    .then(res => res.json());
+
+      De esta manera le diremos al navegador que esta peticion no se almacene dentro del cache del navegador
+      esto hara que al actualizar la pagina la request fetch se ejecute nuevamente.
+
+    b) En el caso de necesitar que la request se haga todo el tiempo, como en una red social o un ecommerce, hay una forma de que las request se
+      ejecuten cada cierto tiempo sin necesidad de que actualicemos la pagina
+
+        const fetchPost = () => fetch('https://jsonplaceholder.typicode.com/posts', {next: {revalidate: 60}})
+                                    .then(res => res.json());
+      De esta forma la peticion se haria cada 60 segundos
+
+
+//Eventos de javascript en Next.js
+
+1)Por defecto, en next.js todos los componentes son componentes del servidor. Que quiere decir esto
+  que los hooks no se pueden utilizar. Para poder utilizarlos debemos declarar que son componentes del cliente
+  mediante use client. Lo mismo pasan con los enventos como handleClick
+
+2)Lo ideal es que el componente en el que utilicemos use client. sea lo mas pequeño posible. Es decir que solo las partes
+  pequeñas que necesitan interactividad, como un button o select sean las que utilicen use client.
 
 3)Para que un componente sea del cliente, tenemos que utilizar use client, esto lo hacemos de la siguiente manera
     
         a)En el principio del archivo donde vamos a crear el componente, agregamos el siguiente string
 
             'use client'
-    
