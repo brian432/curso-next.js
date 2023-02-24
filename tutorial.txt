@@ -1,0 +1,94 @@
+1)instalamos next.js
+    npx create-next-app@latest
+2)Instalamos standar slint
+    a)npm install standard -D
+    b)Agregamos al archivo .eslintrc.json lo siguiente:
+
+        {
+            "extends": ["./node_modules/standard/eslintrc.json","next/core-web-vitals"]
+        }
+3) Las exportaciones de los componente "Page" tienen que ser default
+4) Para crear componentes que no sean rutas
+    a)Creamos la carpeta "components" dentro de app
+    b)Creamos el componente con su nombre en vez de page.jsx.
+
+//Creando rutas
+
+1)Para crear rutas en Next.js debemos, primero, crear una carpeta con el nombre de la rutas
+  dentro de la carpeta app: Ejemplo:
+            app
+                page.jsx
+                about
+                    page.jsx
+  Esta es la forma de que next.js detecte el nuevo componente como una ruta
+
+2)Creando rutas dinamicas para hacer fetching de datos.
+
+    a)Tenemos la ruta "peliculas/avenger" y queremos recuperar el parametro avengers.
+      Para hacer esto debemos crear la siguiente carpeta dentro de la carpeta "Pelicualas"
+
+        peliculas
+                page.jsx
+                [id]
+                    page.jsx
+    b)De esta manera, si ahora accecedemos a /peliculas/avenger nos redireccionara al componente
+      que este creado dentro del archivo page.jsx. Sin necesidad de importar nada. Next.js
+
+    c)Para acceder a lo que sea que escribamos luego de la ruta, en este caso "avenger", peliculas/avenger.
+      Vamos a ir al page.jsx dentro de la carpeta [id] y accedemos de la siguiente manera.
+
+        export default function Posts({params}){
+
+            const {id} = params; //{id} toma ese nombre de la carpeta que creamos, siempre params guarda el parametro con el nombre de la carpeta entre []
+            return(
+                <h1>Este es un post: {id}</h1>
+            )
+        }
+
+
+2)Componentes de enrutador: Ya no tenemos que instalar react-router porque next.js tiene
+  el suyo propio
+
+    a)Link: import Link from "next/link"
+
+            <Link href:"/ruta">
+
+            </Link>
+
+//Agregando estilos css
+
+1)next.js es compatible com css modules. Para utilizarlos haremos lo siguiente.
+
+    a)Dentro de la carpeta del componente que vamos a agregarle los estilos creamos un archivos
+        nombreDelComponente.module.css
+    
+    b)Creamos una clase .header con los estilos que queramos
+
+    c)Luego importamos el estilo dentro del componente de la siguiente forma
+
+        import styles from './navigation.module.css'
+    
+    d)Y agregamos los estilos de la siguiente forma
+
+        <header className={styles.header}></header>
+
+2) El beneficio de utilizar css modules es que el navegador crea hashes, esto quiere decir
+   que va a crear estilos solo para ese componente y si hay otro componente con la clase header
+   no van a chocarse
+
+
+//Fetching de datos
+
+1)Por defecto, en next.js todos los componentes son componentes del servidro. Que quiere decir esto
+  que los hooks no se pueden utilizar. Para poder utilizarlos debemos declarar que son componentes del cliente
+  mediante useClient. Lo mismo pasan con los enventos como handleClick
+
+2)Lo ideal es que el componente en el que utilicemos useCliente. sea lo mas pequeño posible. Es decir que solo las partes
+  pequeñas que necesitan interactividad, como un button o select sean las que utilicen useclient.
+
+3)Para que un componente sea del cliente, tenemos que utilizar use client, esto lo hacemos de la siguiente manera
+    
+        a)En el principio del archivo donde vamos a crear el componente, agregamos el siguiente string
+
+            'use client'
+    
